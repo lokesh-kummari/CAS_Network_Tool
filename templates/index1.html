@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #005580;
+  color: white;
+  padding: 0px 20px; /* Reduced padding */
+  border-left: 30px solid #005580;
+  border-right: 30px solid #005580;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-left: 20px; /* Shifted the buttons to the right */
+}
+
+.button {
+  background-color: #005580;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.search-bar {
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  background-color: white;
+  border: 1px solid #ccc;
+}
+
+.search-input {
+  padding: 5px;
+  border: none;
+  background-color: transparent;
+  width: 100%;
+  font-size: 16px;
+}
+
+.container {
+  display: flex;
+}
+
+.sidebar {
+  background-color: #f1f1f1;
+  padding: 20px;
+  width: 20%;
+}
+
+.vulnerabilities {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.vulnerability {
+  width: 24%;
+  margin-bottom: 20px;
+}
+
+.vulnerability-icon {
+  width: 100px;
+  height: 100px;
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 10px;
+}
+
+.vulnerability-title {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.vulnerability-description {
+  font-size: 14px;
+}
+
+.content {
+  padding: 20px;
+  width: 80%;
+}
+
+.card {
+  background-color: white;
+  border-radius: 5px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+}
+
+.card-title {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.card-description {
+  font-size: 14px;
+}
+
+.search-bar {
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  background-color: white;
+  border: 1px solid #ccc;
+}
+
+.search-input {
+  padding: 5px;
+  border: none;
+  background-color: transparent;
+  width: 100%;
+  font-size: 16px;
+}
+
+.scan-templates {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.scan-template {
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+.scan-template-active {
+  background-color: #005580;
+  color: white;
+}
+
+.vulnerabilities {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.vulnerability {
+  width: 24%;
+  margin-bottom: 20px;
+}
+
+.vulnerability-icon {
+  width: 100px;
+  height: 100px;
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 10px;
+}
+
+.vulnerability-title {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.vulnerability-description {
+  font-size: 14px;
+}
+
+.icon-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+}
+
+.icon {
+  width: 64px;
+  height: 64px;
+}
+
+.button-container {
+    margin-top: 20px;
+}
+
+/* Custom button styling */
+.btn-custom {
+    display: inline-block;
+    margin: 10px;
+    padding: 15px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #ffffff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 50px;
+    transition: background-color 0.3s, box-shadow0.3s;
+}
+
+/* Button hover effect */
+.btn-custom:hover {
+    background-color: #0056b3;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Button active effect */
+.btn-custom:active {
+    background-color: #003f7f;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.card-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.card i {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+.card p {
+        margin: 0;
+        font-size: 18px;
+    }
+
+.packet-list{
+    position: relative;
+            left: 23.33%;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 5, 80, 0.5);
+            text-align: center;
+            transition: opacity 0.5s ease;
+            max-width: 500px; /* Added max-width for better readability */
+            margin: 20px; /* Added margin for spacing from edges */
+            display: grid;
+
+}
+
+input[type=text],
+        input[type=number],
+        button {
+            background-color: #f0f5ff;
+            /* Light blue background */
+            color: #1a73e8;
+            /* Blue text */
+            border: 1px solid #005580;
+            /* Blue border */
+            border-radius: 4px;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .btnSubmit{
+            background-color: #005580;
+            color: #fff;
+        }
+
+        .ip-tabs {
+            display: flex;
+            justify-content: flex-start;
+            gap: 10px;
+            padding-bottom: 10px;
+        }
+
+        .ip-tab {
+            padding: 10px;
+            background-color: #f0f5ff;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .ip-tab.active {
+            background-color: #1a73e8;
+            color: white;
+        }
+
+        .ip-tab.highlight {
+            background-color: #ffa;
+            border: 2px solid #ff0;
+        }
+
+        #packet-list2{
+            background-color: lightgoldenrodyellow;
+            margin-bottom: initial;
+        }
+
+
+
+</style>
+</head>
+
+
+
+
+<body>
+
+<div class="header">
+  <h1>CAS NETWORK-STATS LITE</h1>
+  <div class="button-grid">
+    <button class="button">Login</button>
+    <button class="button">Sign Up</button>
+    <!-- <button class="button">Button 3</button> -->
+  </div>
+</div>
+
+<div class="search-bar">
+    <input type="text" class="search-input" placeholder="Search">
+</div>
+
+<div class="container">
+  <div class="sidebar">
+    <h3> SCANNER</h3>
+    <a href="http://127.0.0.1:5000/" class="card-link">
+        <div class="card">
+            <i class="fas fa-folder"></i>
+            <p>Scan Networks</p>
+        </div>
+    </a>
+
+    <a href="http://127.0.0.1:8000/" class="card-link">
+        <div class="card">
+            <i class="fas fa-folder"></i>
+            <p>Packet Capture</p>
+        </div>
+    </a>
+    
+    
+    <a href="http://127.0.0.1:5001/" class="card-link">
+      <div class="card">
+          <i class="fas fa-folder"></i>
+          <p>Network bandwidth</p>
+      </div>
+  </a>
+
+  <a href="http://127.0.0.1:5002/" class="card-link">
+    <div class="card">
+        <i class="fas fa-folder"></i>
+        <p>Network topology</p>
+    </div>
+</a>
+    <h3>COMPONENT INFORMATION</h3>
+    <div class="card">
+      <i class="fas fa-star"></i>
+      <p>Network Component Information</p>
+    </div>
+    <div class="card">
+      <i class="fas fa-plug"></i>
+      <p>Plugin Rules</p>
+    </div>
+    <div class="card">
+      <i class="fas fa-file-alt"></i>
+      <p>Customized Reports</p>
+    </div>
+
+    <h3>USER POLICIES</h3>
+    <div class="card">
+      <i class="fas fa-star"></i>
+      <p>Policies</p>
+    </div>
+    
+    <div class="card">
+      <i class="fas fa-globe"></i>
+      <p>How To Use</p>
+    </div>
+  </div>
+  <div class="content">
+    <!-- <p><a href="#">Back to Scans</a></p> -->
+    <h2>Packet Capture Data</h2>
+    <div class="packet-list">
+        <h1 style="color: #005580;">Capture Packets</h1>
+        <form id="captureForm" onsubmit="startCapture(event)">
+            <label for="interface">Network Interface (e.g., 'en0')</label><br>
+            <input type="text" id="interface" name="interface" required><br><br>
+
+            <label for="start_ip">Start IP Address</label><br>
+            <input type="text" id="start_ip" name="start_ip" required><br><br>
+
+            <label for="end_ip">End IP Address</label><br>
+            <input type="text" id="end_ip" name="end_ip" required><br><br>
+
+            <label for="count">Number of Packets to Capture</label><br>
+            <input type="number" id="count" name="count" required><br><br>
+
+            <button type="submit" class="btnSubmit">Start Capture</button>
+        </form>
+    </div>
+
+    <div class="ip-tabs">
+        <!-- Tabs will be dynamically populated -->
+    </div>
+
+    <div id="packet-list2">
+        {% if packets %}
+        {% for packet in packets %}
+        <div class="packet" data-src="{{ packet.src_ip }}" data-dst="{{ packet.dst_ip }}">
+            <h4>IP Packet: {{ packet.src_ip }} &rarr; {{ packet.dst_ip }}</h4>
+            <p><strong>Summary:</strong> {{ packet.summary }}</p>
+            <pre><strong>Details:</strong><br>{{ packet.details }}</pre>
+{#            <hr style="color: #cccccc">#}
+            <hr style="height: 15px; background-color: white; border: none;">
+
+        </div>
+        {% endfor %}
+        {% else %}
+        <p>No packets captured yet.</p>
+        {% endif %}
+    </div>
+
+
+    <script>
+        // window.onload = function() {
+        //     fetch('http://127.0.0.1:5000/')
+        //        .then(response => console.log('Server 1 is up and running'))
+        //        .catch(error => console.log('Error starting Server 1:', error));
+
+        //     fetch('http://127.0.0.1:8000/')
+        //        .then(response => console.log('Server 2 is up and running'))
+        //        .catch(error => console.log('Error starting Server 2:', error));
+
+
+        // };
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const packets = document.querySelectorAll('.packet');
+
+            function ipToNumber(ip) {
+                return ip.split('.').reduce((acc, octet) => (acc << 8) + parseInt(octet, 10), 0);
+            }
+            // Function to get unique IP addresses
+            function getUniqueIPs() {
+                let uniqueIPs = new Set();
+                packets.forEach(packet => {
+                    uniqueIPs.add(packet.getAttribute('data-src'));
+                    uniqueIPs.add(packet.getAttribute('data-dst'));
+                });
+                return Array.from(uniqueIPs);
+            }
+
+            // Function to create tabs for each unique IP
+            function createTabs() {
+                const uniqueIPs = getUniqueIPs();
+                const tabContainer = document.querySelector('.ip-tabs');
+
+                uniqueIPs.forEach(ip => {
+                    const tab = document.createElement('div');
+                    tab.classList.add('ip-tab');
+                    tab.textContent = ip;
+                    tabContainer.appendChild(tab);
+
+                    tab.addEventListener('click', function () {
+                        // Show packets related to this IP
+                        showPacketsForIP(ip);
+                        // Handle tab activation
+                        activateTab(tab);
+                    });
+                });
+            }
+
+            // Function to show packets related to a specific IP
+            function showPacketsForIP(ip) {
+                const packets = document.querySelectorAll('.packet');
+                packets.forEach(packet => {
+                    const srcIP = packet.getAttribute('data-src');
+                    const dstIP = packet.getAttribute('data-dst');
+                    if (srcIP === ip || dstIP === ip) {
+                        packet.style.display = 'block';
+                    } else {
+                        packet.style.display = 'none';
+                    }
+                });
+            }
+
+            document.getElementById('captureForm').addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent default form submission
+
+                // Collect form data
+                const formData = new FormData(document.getElementById('captureForm'));
+
+                // Send form data to Flask endpoint using AJAX (Replace with actual endpoint and method)
+                fetch('/start_capture', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.text())
+                .then(data => {
+                    // Display alert with response message
+                    alert(data);
+                    // Refresh the page to update captured packets
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+
+
+            // Function to activate/deactivate tabs
+            function activateTab(tab) {
+                const allTabs = document.querySelectorAll('.ip-tab');
+                allTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+            }
+
+            // Initialize tabs on page load
+            createTabs();
+        });
+
+        function initializeTabs() {
+                const startIP = document.getElementById('start_ip').value;
+                const endIP = document.getElementById('end_ip').value;
+                createTabs(startIP, endIP);
+        }
+
+        function startCapture(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Collect form data
+            const formData = new FormData(document.getElementById('captureForm'));
+
+            // Send form data to Flask endpoint using AJAX
+            fetch('/start_capture', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.text())
+                .then(data => {
+                    // Display alert with response message
+                    alert(data);
+                    // Refresh the page to update captured packets
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+    </script>
+    <!-- Bootstrap JS and dependencies (optional for additional functionality) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #005580;
+  color: white;
+  padding: 0px 20px; /* Reduced padding */
+  border-left: 30px solid #005580;
+  border-right: 30px solid #005580;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-left: 20px; /* Shifted the buttons to the right */
+}
+
+.button {
+  background-color: #005580;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.search-bar {
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  background-color: white;
+  border: 1px solid #ccc;
+}
+
+.search-input {
+  padding: 5px;
+  border: none;
+  background-color: transparent;
+  width: 100%;
+  font-size: 16px;
+}
+
+.container {
+  display: flex;
+}
+
+.sidebar {
+  background-color: #f1f1f1;
+  padding: 20px;
+  width: 20%;
+}
+
+.vulnerabilities {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.vulnerability {
+  width: 24%;
+  margin-bottom: 20px;
+}
+
+.vulnerability-icon {
+  width: 100px;
+  height: 100px;
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 10px;
+}
+
+.vulnerability-title {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.vulnerability-description {
+  font-size: 14px;
+}
+
+.content {
+  padding: 20px;
+  width: 80%;
+}
+
+.card {
+  background-color: white;
+  border-radius: 5px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+}
+
+.card-title {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.card-description {
+  font-size: 14px;
+}
+
+.search-bar {
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  background-color: white;
+  border: 1px solid #ccc;
+}
+
+.search-input {
+  padding: 5px;
+  border: none;
+  background-color: transparent;
+  width: 100%;
+  font-size: 16px;
+}
+
+.scan-templates {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.scan-template {
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+.scan-template-active {
+  background-color: #005580;
+  color: white;
+}
+
+.vulnerabilities {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.vulnerability {
+  width: 24%;
+  margin-bottom: 20px;
+}
+
+.vulnerability-icon {
+  width: 100px;
+  height: 100px;
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 10px;
+}
+
+.vulnerability-title {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.vulnerability-description {
+  font-size: 14px;
+}
+
+.icon-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+}
+
+.icon {
+  width: 64px;
+  height: 64px;
+}
+
+.button-container {
+    margin-top: 20px;
+}
+
+/* Custom button styling */
+.btn-custom {
+    display: inline-block;
+    margin: 10px;
+    padding: 15px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #ffffff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 50px;
+    transition: background-color 0.3s, box-shadow0.3s;
+}
+
+/* Button hover effect */
+.btn-custom:hover {
+    background-color: #0056b3;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Button active effect */
+.btn-custom:active {
+    background-color: #003f7f;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.card-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.card i {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+.card p {
+        margin: 0;
+        font-size: 18px;
+    }
+</style>
+</head>
+
+
+
+
+<body>
+
+<div class="header">
+  <h1>CAS NETWORK-STATS LITE</h1>
+  <div class="button-grid">
+    <button class="button">Login</button>
+    <button class="button">Sign Up</button>
+    <!-- <button class="button">Button 3</button> -->
+  </div>
+</div>
+
+<div class="search-bar">
+    <input type="text" class="search-input" placeholder="Search">
+</div>
+
+<div class="container">
+  <div class="sidebar">
+    <h3> SCANNER</h3>
+    <a href="http://127.0.0.1:5000/" class="card-link">
+        <div class="card">
+            <i class="fas fa-folder"></i>
+            <p>Scan Networks</p>
+        </div>
+    </a>
+
+    <a href="http://127.0.0.1:8000/" class="card-link">
+        <div class="card">
+            <i class="fas fa-folder"></i>
+            <p>Packet Capture</p>
+        </div>
+    </a>
+    
+    
+    <div class="card">
+      <i class="fas fa-folder"></i>
+      <p>Power ON/OFF</p>
+    </div>
+    <h3>TOPOLOGY</h3>
+    <div class="card">
+      <i class="fas fa-star"></i>
+      <p>Network Component Information</p>
+    </div>
+    <div class="card">
+      <i class="fas fa-plug"></i>
+      <p>Plugin Rules</p>
+    </div>
+    <div class="card">
+      <i class="fas fa-file-alt"></i>
+      <p>Customized Reports</p>
+    </div>
+
+    <h3>USER POLICIES</h3>
+    <div class="card">
+      <i class="fas fa-star"></i>
+      <p>Policies</p>
+    </div>
+    
+    <div class="card">
+      <i class="fas fa-globe"></i>
+      <p>How To Use</p>
+    </div>
+  </div>
+  <div class="content">
+    <h2>Results</h2>
+    <p><a href="#">Back to Scans</a></p>
+    <div class="scan-templates">
+      <div class="scan-template scan-template-active">Scanner</div>
+      <div class="scan-template">Web App</div>
+      <div class="scan-template">User Defined</div>
+    </div>
+    <h2>Packet Capture Data</h2>
+    <div class="packet-list">
+        <table>
+            <tr>
+                <th>Source IP</th>
+                <th>Destination IP</th>
+                <th>Packet Summary</th>
+                <th>Packet Details</th>
+            </tr>
+            {% for packet in packets %}
+            <tr>
+                <td>{{ packet.src_ip }}</td>
+                <td>{{ packet.dst_ip }}</td>
+                <td>{{ packet.summary }}</td>
+                <td>{{ packet.details }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <script>
+        window.onload = function() {
+            fetch('http://127.0.0.1:5000/')
+               .then(response => console.log('Server 1 is up and running'))
+               .catch(error => console.log('Error starting Server 1:', error));
+
+            fetch('http://127.0.0.1:8000/')
+               .then(response => console.log('Server 2 is up and running'))
+               .catch(error => console.log('Error starting Server 2:', error));
+        };
+    </script>
+    <!-- Bootstrap JS and dependencies (optional for additional functionality) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

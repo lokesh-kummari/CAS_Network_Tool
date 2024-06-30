@@ -1,0 +1,520 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>Network Scanner</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transition: opacity 0.5s ease;
+            max-width: 600px; /* Added max-width for better readability */
+            margin: 20px; /* Added margin for spacing from edges */
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            margin-top: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: calc(100% - 22px); /* Adjusted width for better alignment */
+            padding: 10px;
+            margin-bottom: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .loader {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9999;
+        }
+        .carousel {
+            width: 80%;
+            max-width: 500px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .carousel-card {
+            display: none;
+            padding: 20px;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+        .carousel-card.active {
+            display: block;
+        }
+        .progress-bar {
+            width: 80%;
+            max-width: 500px;
+            height: 10px;
+            background-color: #ccc;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        .progress {
+            width: 0;
+            height: 100%;
+            background-color: #007bff;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+        .results-container {
+            margin-top: 20px;
+            max-width: 600px; /* Added max-width for better readability */
+            margin: 20px; /* Added margin for spacing from edges */
+        }
+        .results-container > * {
+            margin-bottom: 10px; /* Added spacing between elements */
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="form-container">
+        <h1>Network Scanner</h1>
+        <form id="scan-form">
+            <label for="ip_range">IP Range:</label>
+            <input type="text" id="ip_range" name="ip_range" placeholder="192.168.1.1/24" required>
+            <button type="submit">Scan</button>
+        </form>
+    </div>
+    <div class="loader" id="loader">
+        <div class="carousel">
+            <div class="carousel-card active">
+                <h2>Fact 1</h2>
+                <p>DRDO stands for Defense Research and Development Organization.</p>
+            </div>
+            <div class="carousel-card">
+                <h2>Fact 2</h2>
+                <p>DRDO is an agency of the Government of India, responsible for military research and development.</p>
+            </div>
+            <div class="carousel-card">
+                <h2>Fact 3</h2>
+                <p>DRDO was established in 1958 with a vision to empower India with cutting-edge defense technologies.</p>
+            </div>
+            <div class="carousel-card">
+                <h2>Fact 4</h2>
+                <p>DRDO has developed numerous strategic defense systems, including missiles, radars, and electronic warfare systems.</p>
+            </div>
+            <div class="carousel-card">
+                <h2>Fact 5</h2>
+                <p>DRDO collaborates extensively with various stakeholders, including academic institutions, industry, and international partners.</p>
+            </div>
+            <div class="carousel-card">
+                <h2>Fact 6</h2>
+                <p>DRDO plays a crucial role in enhancing India's self-reliance in defense technology and reducing dependency on imports.</p>
+            </div>
+            <div class="carousel-card">
+                <h2>Fact 7</h2>
+                <p>DRDO is headquartered in New Delhi and operates through a network of labs and facilities across India.</p>
+            </div>
+        </div>
+        <div class="progress-bar">
+            <div class="progress"></div>
+        </div>
+    </div>
+    <div class="results-container container" id="results-container" style="display:none;">
+        <h1>Scan Results</h1>
+        <div>
+            <button id="refresh-results">Refresh</button>
+        </div>
+        <a href="/">Back to Home</a>
+        <table id="results-table">
+            <thead>
+                <tr>
+                    <th>Device</th>
+                    <th>IP Address</th>
+                    <th>MAC Address</th>
+                    <th>Open Ports</th>
+                </tr>
+            </thead>
+            <tbody id="results-body">
+            </tbody>
+        </table>
+    </div>
+    <script>
+        document.getElementById("scan-form").addEventListener("submit", function (event) {
+            event.preventDefault();
+            document.getElementById("form-container").style.opacity = 0;
+            setTimeout(() => {
+                document.getElementById("form-container").style.display = "none";
+                document.getElementById("loader").style.display = "flex";
+                startScan();
+            }, 500);
+        });
+
+        document.getElementById("refresh-results").addEventListener("click", function () {
+            document.getElementById("loader").style.display = "flex";
+            document.getElementById("results-container").style.display = "none";
+            startScan();
+        });
+
+        function startScan() {
+            let ipRange = document.getElementById("ip_range").value;
+            let carouselCards = document.querySelectorAll(".carousel-card");
+            let progress = document.querySelector(".progress");
+            let currentCard = 0;
+            let carouselInterval = setInterval(() => {
+                carouselCards[currentCard].classList.remove("active");
+                currentCard = (currentCard + 1) % carouselCards.length;
+                carouselCards[currentCard].classList.add("active");
+            }, 3000);
+
+            fetch('/scan', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ ip_range: ipRange }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                clearInterval(carouselInterval);
+                document.getElementById("loader").style.display = "none";
+                displayResults(data.devices);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                clearInterval(carouselInterval);
+                alert('An error occurred during scanning.');
+            });
+        }
+
+        function displayResults(devices) {
+            let resultsContainer = document.getElementById('results-container');
+            let resultsTable = document.getElementById('results-table');
+            let resultsBody = document.getElementById('results-body');
+            resultsBody.innerHTML = '';
+            devices.forEach((device, index) => {
+                let row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${device.ip}</td>
+                    <td>${device.mac}</td>
+                    <td>${device.ports.join(', ')}</td>
+                `;
+                resultsBody.appendChild(row);
+            });
+            resultsContainer.style.display = 'block';
+        }
+    </script>
+</body>
+</html> -->
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Network Scanner</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transition: opacity 0.5s ease;
+            max-width: 600px; /* Added max-width for better readability */
+            margin: 20px; /* Added margin for spacing from edges */
+        }
+        h1 {
+            color: #005580;
+        }
+        form {
+            margin-top: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: calc(100% - 22px); /* Adjusted width for better alignment */
+            padding: 10px;
+            margin-bottom: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #005580;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        button:hover {
+            background-color: #003f7f;
+        }
+        .loader {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9999;
+        }
+        .carousel {
+            width: 80%;
+            max-width: 500px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .carousel-card {
+            display: none;
+            padding: 20px;
+            background-color: #005580;
+            color: white;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+        .carousel-card.active {
+            display: block;
+        }
+        .progress-bar {
+            width: 80%;
+            max-width: 500px;
+            height: 10px;
+            background-color: #ccc;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        .progress {
+            width: 0;
+            height: 100%;
+            background-color: #005580;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #005580;
+            color: white;
+        }
+        .results-container {
+            margin-top: 20px;
+            max-width: 600px; /* Added max-width for better readability */
+            margin: 20px; /* Added margin for spacing from edges */
+        }
+        .results-container > * {
+            margin-bottom: 10px; /* Added spacing between elements */
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="form-container">
+        <h1>Network Scanner</h1>
+        <form id="scan-form">
+            <label for="ip_range">IP Range:</label>
+            <input type="text" id="ip_range" name="ip_range" placeholder="192.168.1.1/24" required>
+            <button type="submit">Scan</button>
+            <br> <br>
+            <a href="http://127.0.0.1:3000/home.html">Back to Home</a>
+
+        </form>
+    </div>
+    <div class="loader" id="loader">
+        <div class="carousel">
+            <div class="carousel-card active">
+                <h2>Fact 1</h2>
+                <p>DRDO stands for Defense Research and Development Organization.</p>
+            </div>
+            <div class="carousel-card">
+                <h2>Fact 2</h2>
+                <p>DRDO is an agency of the Government of India, responsible for military research and development.</p>
+            </div>
+            <div class="carousel-card">
+                <h2>Fact 3</h2>
+                <p>DRDO was established in 1958 with a vision to empower India with cutting-edge defense technologies.</p>
+            </div>
+            <div class="carousel-card">
+                <h2>Fact 4</h2>
+                <p>DRDO has developed numerous strategic defense systems, including missiles, radars, and electronic warfare systems.</p>
+            </div>
+            <div class="carousel-card">
+                <h2>Fact 5</h2>
+                <p>DRDO collaborates extensively with various stakeholders, including academic institutions, industry, and international partners.</p>
+            </div>
+            <div class="carousel-card">
+                <h2>Fact 6</h2>
+                <p>DRDO plays a crucial role in enhancing India's self-reliance in defense technology and reducing dependency on imports.</p>
+            </div>
+            <div class="carousel-card">
+                <h2>Fact 7</h2>
+                <p>DRDO is headquartered in New Delhi and operates through a network of labs and facilities across India.</p>
+            </div>
+        </div>
+        <div class="progress-bar">
+            <div class="progress"></div>
+        </div>
+    </div>
+    <div class="results-container container" id="results-container" style="display:none;">
+        <h1>Scan Results</h1>
+        <div>
+            <button id="refresh-results">Refresh</button>
+        </div>
+        <table id="results-table">
+            <thead>
+                <tr>
+                    <th>Device</th>
+                    <th>IP Address</th>
+                    <th>MAC Address</th>
+                    <th>Open Ports</th>
+                </tr>
+            </thead>
+            <tbody id="results-body">
+            </tbody>
+        </table>
+    </div>
+    <script>
+        document.getElementById("scan-form").addEventListener("submit", function (event) {
+            event.preventDefault();
+            document.getElementById("form-container").style.opacity = 0;
+            setTimeout(() => {
+                document.getElementById("form-container").style.display = "none";
+                document.getElementById("loader").style.display = "flex";
+                startScan();
+            }, 500);
+        });
+
+        document.getElementById("refresh-results").addEventListener("click", function () {
+            document.getElementById("loader").style.display = "flex";
+            document.getElementById("results-container").style.display = "none";
+            startScan();
+        });
+
+        function startScan() {
+            let ipRange = document.getElementById("ip_range").value;
+            let carouselCards = document.querySelectorAll(".carousel-card");
+            let progress = document.querySelector(".progress");
+            let currentCard = 0;
+            let carouselInterval = setInterval(() => {
+                carouselCards[currentCard].classList.remove("active");
+                currentCard = (currentCard + 1) % carouselCards.length;
+                carouselCards[currentCard].classList.add("active");
+            }, 3000);
+
+            fetch('/scan', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ ip_range: ipRange }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                clearInterval(carouselInterval);
+                document.getElementById("loader").style.display = "none";
+                displayResults(data.devices);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                clearInterval(carouselInterval);
+                alert('An error occurred during scanning.');
+            });
+        }
+
+        function displayResults(devices) {
+            let resultsContainer = document.getElementById('results-container');
+            let resultsTable = document.getElementById('results-table');
+            let resultsBody = document.getElementById('results-body');
+            resultsBody.innerHTML = '';
+            devices.forEach((device, index) => {
+                let row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${device.ip}</td>
+                    <td>${device.mac}</td>
+                    <td>${device.ports.join(', ')}</td>
+                `;
+                resultsBody.appendChild(row);
+            });
+            resultsContainer.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

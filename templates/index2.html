@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capture Packets & Network Statistics</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.21/jspdf.plugin.autotable.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background-color: #f4f4f4;
+            color: #1C1E36;
+            font-family: Arial, Helvetica, sans-serif;
+            padding: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        .packet, .interface {
+            background-color: #005580;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+        .packet h4, .interface h3 {
+            margin-top: 0;
+            color: white;
+        }
+        .packet p, .packet pre, .interface p {
+            color: white;
+        }
+        .packet pre {
+            white-space: pre-wrap;
+        }
+        label {
+            color: #1C1E36;
+            font-weight: bold;
+        }
+        input[type=text], input[type=number], button, select {
+            background-color: #f0f5ff;
+            color: #1a73e8;
+            border: 1px solid #005580;
+            border-radius: 4px;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+        button {
+            background-color: #005580;
+            color: white;
+            cursor: pointer;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .dropdown {
+            padding: 10px;
+            font-size: 1em;
+            border-radius: 8px;
+            border: 1px solid #005580;
+            background-color: #f0f5ff;
+            color: #1a73e8;
+        }
+        .pdf-button {
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 8px;
+            border: 1px solid #005580;
+            background-color: #005580;
+            color: white;
+            cursor: pointer;
+        }
+        #inactive-interfaces {
+            margin-top: 40px;
+        }
+        #inactive-interfaces h2 {
+            text-align: center;
+            color: #005580;
+        }
+        .inactive-interface {
+            padding: 5px;
+            font-size: 1em;
+            color: white;
+            margin-bottom: 5px;
+            display: inline-block;
+            margin-right: 10px;
+            cursor: pointer;
+            border: 1px solid #1C1E36;
+            border-radius: 4px;
+            background-color: #005580;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border-radius: 8px;
+        }
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #1C1E36;
+            text-align: left;
+        }
+        th {
+            background-color: #005580;
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+        td {
+            background-color: #f0f5ff;
+            color: #1a73e8;
+        }
+        tr:nth-child(even) td {
+            background-color: #d4e1ff;
+        }
+        tr:hover td {
+            background-color: #005580;
+            color: white;
+        }
+        .active {
+            background-color: #d4edda !important;
+            color: #155724 !important;
+        }
+        .inactive {
+            background-color: #f8d7da !important;
+            color: #721c24 !important;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center; color: #1C1E36;">Bandwitdh Usage</h1>
+    <div class="controls">
+        <div>
+            <label for="unit-select">Display unit: </label>
+            <select id="unit-select" class="dropdown" onchange="fetchNetworkStats()">
+                <option value="bytes">Bytes</option>
+                <option value="KB">KB</option>
+                <option value="MB">MB</option>
+                <option value="GB">GB</option>
+            </select>
+        </div>
+
+        <div>
+            <a href="http://127.0.0.1:3000/home.html">Back to Home</a>
+        </div>
+        <button class="pdf-button" onclick="downloadPDF()">Download as PDF</button>
+    </div>
+    <div id="network-stats"></div>
+    <div id="inactive-interfaces">
+        <div id="inactive-stats"></div>
+    </div>
+
+    <script>
+        function formatBytes(bytes, unit) {
+            const units = {
+                'bytes': 1,
+                'KB': 1024,
+                'MB': 1024 * 1024,
+                'GB': 1024 * 1024 * 1024
+            };
+            return (bytes / units[unit]).toFixed(2);
+        }
+
+        async function fetchNetworkStats() {
+            const unit = document.getElementById('unit-select').value;
+            try {
+                const response = await fetch('/network_stats');
+                const stats = await response.json();
+                displayNetworkStats(stats, unit);
+            } catch (error) {
+                console.error('Error fetching network stats:', error);
+            }
+        }
+
+        function displayNetworkStats(stats, unit) {
+            const activeContainer = document.getElementById('network-stats');
+            const inactiveContainer = document.getElementById('inactive-stats');
+            activeContainer.innerHTML = '';
+            inactiveContainer.innerHTML = '';
+
+            const sortedInterfaces = Object.entries(stats).sort((a, b) => {
+                return b[1].bytes_sent - a[1].bytes_sent;
+            });
+
+            const table = document.createElement('table');
+            const thead = document.createElement('thead');
+            const tbody = document.createElement('tbody');
+
+            const headerRow = document.createElement('tr');
+            ['Interface', 'Total Bytes Sent', 'Total Bytes Received', 'Bandwidth Usage (Sent)', 'Bandwidth Usage (Received)', 'Status'].forEach(text => {
+                const th = document.createElement('th');
+                th.textContent = text;
+                headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+
+            sortedInterfaces.forEach(([interface, data]) => {
+                const isActive = data.bytes_sent !== 0 || data.bytes_recv !== 0;
+                const status = isActive ? 'Active' : 'Inactive';
+                const statusClass = isActive ? 'active' : 'inactive';
+                const statusIcon = isActive ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-times-circle"></i>';
+                const row = document.createElement('tr');
+                row.classList.add(statusClass);
+                row.innerHTML = `
+                    <td>${interface}</td>
+                    <td>${formatBytes(data.bytes_sent, unit)} ${unit}</td>
+                    <td>${formatBytes(data.bytes_recv, unit)} ${unit}</td>
+                    <td>${formatBytes(data.bytes_sent_sec, unit)} ${unit}/sec</td>
+                    <td>${formatBytes(data.bytes_recv_sec, unit)} ${unit}/sec</td>
+                    <td>${statusIcon} ${status}</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            table.appendChild(tbody);
+            activeContainer.appendChild(table);
+        }
+
+        function startCapture(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Collect form data
+            const formData = new FormData(document.getElementById('captureForm'));
+
+            // Send form data to Flask endpoint using AJAX
+            fetch('/start_capture', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                // Display alert with response message
+                alert(data);
+                // Refresh the page to update captured packets
+                location.reload();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.autoTable({ html: 'table' });
+            doc.save('network_stats.pdf');
+        }
+
+        // Fetch the initial stats on page load
+        fetchNetworkStats();
+
+        // Fetch the stats every 5 seconds
+        setInterval(fetchNetworkStats, 100);
+    </script>
+</body>
+</html>
