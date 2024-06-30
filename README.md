@@ -44,7 +44,7 @@ This project is designed to monitor and visualize network activities using multi
 1. **Clone the repository**:
     ```bash
     git clone https://github.com/lokesh-kummari/CAS_Network_Tool
-    cd yourproject
+    cd CAS_Network_Tool
     ```
 
 2. **Create and activate a virtual environment** (optional but recommended):
