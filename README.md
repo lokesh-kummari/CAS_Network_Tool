@@ -30,8 +30,6 @@ This project is designed to monitor and visualize network activities using multi
 - **Packet Sniffing**: Capture and display network packets within a specified IP range.
 - **Port Scanning**: Scan and identify open ports on devices within a network.
 
-<<<<<<< HEAD
-=======
 ## 🛠️ Technology Stack
 
 | **Frontend**     | **Backend**   | **Packet Manipulation**  | **Visualization**  | **Libraries**  | **Version Control** |
@@ -41,7 +39,6 @@ This project is designed to monitor and visualize network activities using multi
 | ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black) |               |                          |                    |                |                     |
 
 
->>>>>>> 8937900 (Your commit message here)
 ## Requirements
 
 - Python 3.6+
